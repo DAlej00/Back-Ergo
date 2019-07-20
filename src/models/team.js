@@ -8,7 +8,8 @@ var teamSchema = Schema({
     description: String,
     integrants: [{
         user: { type: Schema.Types.ObjectId, ref: 'user' },
-        role: String
+        role: String,
+        supervisor: { type: Schema.Types.ObjectId, ref: 'user' }
     }]
 });
 
