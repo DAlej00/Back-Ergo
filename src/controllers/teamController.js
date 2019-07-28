@@ -78,9 +78,9 @@ function deleteTeam(req, res) {
     });
 }
 
-function addIntegrant(req, res) {
+function addMember(req, res) {
     var teamId = req.params.teamId;
-    var integrantId = req.params.integrantId;
+    var memberId = req.params.memberId;
     var estado = true;
 
     Team.findById(teamId).exec((err, foundTeam) => {
@@ -90,7 +90,7 @@ function addIntegrant(req, res) {
         } else {
             if (true) {
                 foundTeam.integrants.forEach(element => {
-                    if (element._id === integrantId) {
+                    if (element._id === memberId) {
                         estado = false;
                         return res.status(500).send({ message: 'El usuario ya es integrante de este equipo.' })
                     }
@@ -98,7 +98,7 @@ function addIntegrant(req, res) {
                 if (estado) {
                     Team.findByIdAndUpdate(teamId, {
                         $addToSet: {
-                            integrants: { 'user': integrantId, 'role': 'USER' }
+                            integrants: { 'user': memberId, 'role': 'USER' }
                         }
                     }, { new: true }, (err, updatedTeam) => {
                         if (err) return res.status(500).send({ message: 'Error at adding integrant' });
@@ -115,10 +115,10 @@ function addIntegrant(req, res) {
     })
 }
 
-function removeIntegrant(req, res) {
+function removeMember(req, res) {
     var teamId = req.params.teamId;
     var ManagerId = req.user.sub;
-    var integranId = req.params.integrantId;
+    var integranId = req.params.memberId;
 
     Team.findById(teamId).exec((err, foundTeam) => {
         if (err) return res.status(500).send({ message: 'Error at searching teams' });
@@ -165,9 +165,9 @@ function userTeams(req, res) {
 
 module.exports = {
     createTeam,
-    addIntegrant,
+    addMember,
     editTeam,
-    removeIntegrant,
+    removeMember,
     deleteTeam,
     listTeams,
     getTeam,

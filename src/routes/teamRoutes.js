@@ -11,8 +11,8 @@ api.get('/:id', teamController.getTeam);
 api.get('/user', md_auth.ensureAuth, teamController.userTeams)
 api.post('/', md_auth.ensureAuth, teamController.createTeam);
 api.put('/:id', md_auth.ensureAuth, teamController.editTeam);
-api.put('/:teamId/integrant/:integrantId', md_auth.ensureAuth, teamController.addIntegrant);
+api.put('/:teamId/member/:memberId', md_auth.ensureAuth, teamController.addMember);
 api.delete('/:teamId', md_auth.ensureAuth, teamController.deleteTeam);
-api.delete('/:teamId/integrant/:integrantId', md_auth.ensureAuth, teamController.removeIntegrant);
+api.delete('/:teamId/member/:memberId', md_auth.ensureAuth, teamController.removeMember);
 
 module.exports = api;

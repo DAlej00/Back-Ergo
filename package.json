@@ -1,9 +1,8 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "Backen para el proyecto de ExpoKinal 2019",
+  "description": "Backend ERGO 2019",
   "main": "src/index.js",
-  "repository": "https://github.com/expokinal2019/Backend.git",
   "author": "BackendTeam",
   "license": "MIT",
   "scripts": {
