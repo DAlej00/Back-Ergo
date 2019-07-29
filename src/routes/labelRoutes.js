@@ -2,7 +2,7 @@
 
 var express = require('express');
 var md_auth = require('../middlewares/authentication');
-var LabelController=require('../controllers/labelController')
+var LabelController = require('../controllers/labelController')
 
 var api = express.Router();
 
