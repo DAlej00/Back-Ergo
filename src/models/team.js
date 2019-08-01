@@ -10,7 +10,8 @@ var teamSchema = Schema({
         user: { type: Schema.Types.ObjectId, ref: 'user' }, //Integrante
         role: String, //rol...Developer || Supervisor
         supervisor: { type: Schema.Types.ObjectId, ref: 'user' } //Persona que revisará las tareas de los demás.
-    }]
+    }],
+    manager: {type:Schema.Types.ObjectId, ref: 'user'} //El administrador del equipo.
 });
 
 module.exports = mongoose.model('Team', teamSchema);
