@@ -94,7 +94,7 @@ function deleteTeam(req, res) {
     });
 }
 
-function addIntegrant(req, res) {
+function addMember(req, res) {
     var teamId = req.params.teamId;
     var integrantId = req.params.integrantId;
     var supervisorId = req.params.supervisorId;
@@ -129,7 +129,7 @@ function addIntegrant(req, res) {
     });
 }
 
-function removeIntegrant(req, res) {
+function removeMember(req, res) {
     var teamId = req.params.teamId;
     var managerId = req.user.sub;
     var integrantId = req.params.integrantId;
@@ -191,9 +191,9 @@ function userTeams(req, res) {
 
 module.exports = {
     createTeam,
-    addIntegrant,
+    addMember,
     editTeam,
-    removeIntegrant,
+    removeMember,
     deleteTeam,
     listTeams,
     getTeam,

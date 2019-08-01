@@ -13,6 +13,6 @@ api.post('', md_auth.ensureAuth, teamController.createTeam);
 api.put('/:id', md_auth.ensureAuth, teamController.editTeam);
 api.put('/:teamId/integrant/:integrantId/supervisor/:supervisorId', md_auth.ensureAuth, teamController.addIntegrant);
 api.delete('/:teamId', md_auth.ensureAuth, teamController.deleteTeam);
-api.delete('/:teamId/integrant/:integrantId', md_auth.ensureAuth, teamController.removeIntegrant);
+api.delete('/:teamId/member/:memberId', md_auth.ensureAuth, teamController.removeMember);
 
 module.exports = api;

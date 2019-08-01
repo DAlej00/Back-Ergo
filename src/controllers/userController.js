@@ -12,37 +12,37 @@ function signUp(req, res) {
 
   if (params.name && params.username && params.email && params.password) {
     user.name = params.name;
+    user.lastName = params.lastName;
     user.username = params.username;
     user.email = params.email;
     user.password = params.password;
     user.image = null;
+    user.notification = 0;
 
-    bcrypt.genSalt(10, function(err, salt) {
-      bcrypt.hash(params.password, salt, function(err, hash) {
-        user.password = hash;
+    User.find({ $or: [{ username: user.username }, { email: user.email }] }).exec((err, users) => {
+      if (err) return res.status(500).send({ message: 'Error en la petición' });
+      if (users && users.length >= 1) {
+        if (users[0].username == user.username) return res.status(500).send({ message: `El nombre de usuario '${user.username}' ya esta registrado` });
+        else if (users[0].email == user.email) return res.status(500).send({ message: `El correo '${user.email}' ya esta registrado` });
+      } else {
+        bcrypt.genSalt(10, function (err, salt) {
+          bcrypt.hash(params.password, salt, function (err, hash) {
+            user.password = hash;
 
-        user.save((err, storedUser) => {
-          if (err)
-            return res
-              .status(500)
-              .send({ message: "Error en la peticion" });
-
-          if (!storedUser) {
-            return res
-              .status(404)
-              .send({ message: "El usuario no pudo ser creado" });
-          } else {
-            delete storedUser.password;
-            return res.status(200).send({ user: storedUser });
-          }
+            user.save((err, storedUser) => {
+              if (err) return res.status(500).send({ message: "Error en la peticion" });
+              if (!storedUser) return res.status(404).send({ message: "El usuario no pudo ser creado" });
+              else {
+                delete storedUser.password;
+                return res.status(200).send({ user: storedUser });
+              }
+            });
+          });
         });
-      });
+      }
     });
-  } else {
-    return res
-      .status(500)
-      .send({ message: "Debe llenar todos los datos" });
-  }
+
+  } else return res.status(500).send({ message: "Debe llenar todos los datos" });
 }
 
 function login(req, res) {
@@ -61,26 +61,24 @@ function login(req, res) {
           return res.status(404).send({ message: "Contraseña incorrecta" });
         } else {
           foundUser.password = undefined;
-          return res
-            .status(200)
-            .send({ foundUser, token: jwt.createToken(foundUser) });
+          return res.status(200).send({ user: foundUser, token: jwt.createToken(foundUser) });
         }
       });
     }
   });
 }
 
-function getUser(req, res){
+function getUser(req, res) {
   let idUser = req.params.id;
 
-  User.findOne({ _id : idUser }).exec((err, user) => {
-      if (err) return res.status(500).send({ message: 'Error en la peticion' });
+  User.findOne({ _id: idUser }).exec((err, user) => {
+    if (err) return res.status(500).send({ message: 'Error en la peticion' });
 
-      if (!user) {
-          return res.status(500).send({ message: 'Usuario no encontrado' });
-      } else {
-          return res.status(200).send({ user: user });
-      }
+    if (!user) {
+      return res.status(500).send({ message: 'Usuario no encontrado' });
+    } else {
+      return res.status(200).send({ user: user });
+    }
   })
 }
 
@@ -205,9 +203,9 @@ function getImage(req, res) {
 
 function listUsers(req, res) {
   User.find({}).exec((err, userUsers) => {
-      if (err) return res.status(500).send({ message: 'Request error!' });
+    if (err) return res.status(500).send({ message: 'Request error!' });
 
-      return res.status(200).send({ users: userUsers });
+    return res.status(200).send({ users: userUsers });
   })
 }
 

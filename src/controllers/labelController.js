@@ -45,10 +45,20 @@ function getLabels(req,res) {
     })
 }
 
+function getLabel(req, res){
+    var labelId = req.params.id;
+    Label.findById(labelId, (err, label)=>{
+        if (err) return res.status(500).send({message: 'Error en la peticion'});
+        if(!label) return res.status(404).send({message: 'No se ha podido obtener la etiqueta'});
+        return res.status(200).send({label: label});
+    } )
+}
+
 
 module.exports={
     createLabel,
     editLabel,
     deleteLabel,
-    getLabels
+    getLabels,
+    getLabel
 }

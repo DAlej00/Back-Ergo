@@ -9,7 +9,7 @@ var notificationSchema = Schema({
     title: String, // Hola user321, únete a mi equipo
     description: String, // 'user123 te ha invitado a estar en su equipo'
     checked: Boolean, //Leído
-    answer: Boolean // Respuesta
+    answered: Boolean // Respuesta
 });
 
-module.exports = mongoose.model('Converstion', notificationSchema);
+module.exports = mongoose.model('Conversation', notificationSchema);
