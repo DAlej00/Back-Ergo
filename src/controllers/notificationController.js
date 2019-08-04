@@ -6,7 +6,7 @@ function createNotification(req, res) {
     var params = req.body;
     var notification = new Notification();
     if (params.to && params.title && params.description) {
-        notification.from = req.params.sub;
+        notification.from = req.user.sub;
         notification.to = params.to;
         notification.title = params.title;
         notification.description = params.description;
@@ -69,12 +69,12 @@ function getNotifications(req, res) {
     })
 }
 
-function count(userId) {
-    var notifications = 0;
+function count(userId, callback) {
     Notification.find({to: userId, checked: false}, (err, notificationsFound)=>{
-        if(notificationsFound) {
-            notifications = notificationsFound.length;
-            return notifications;
+        if(err || !notificationsFound){
+            callback(err, null);
+        }else {
+            callback(null, notificationsFound.length || 0)
         }
     });
 }

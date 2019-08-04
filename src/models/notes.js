@@ -9,4 +9,4 @@ var notesSchema = Schema({
     owner: { type: Schema.Types.ObjectId, ref: 'User' } //propietario de la nota
 });
 
-module.exports = mongoose.model('Notes', notesSchema);
+module.exports = mongoose.model('Note', notesSchema);

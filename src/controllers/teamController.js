@@ -166,7 +166,6 @@ function listTeams(req, res) {
             return res.status(500).send({ message: 'Error en la peticion' });
         if (!userTeams)
             return res.status(404).send({ message: 'No se han obtenido los equipos' });
-            
         return res.status(200).send({ teams: userTeams });
     });
 }

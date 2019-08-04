@@ -5,6 +5,7 @@ var jwt = require("../services/jwt");
 var User = require("../models/user");
 var path = require("path");
 var fs = require("fs");
+var Notifications = require('./notificationController');
 
 function signUp(req, res) {
   var params = req.body;
@@ -17,7 +18,7 @@ function signUp(req, res) {
     user.email = params.email;
     user.password = params.password;
     user.image = null;
-    user.notification = 0;
+    user.notifications = 0;
 
     User.find({ $or: [{ username: user.username }, { email: user.email }] }).exec((err, users) => {
       if (err) return res.status(500).send({ message: 'Error en la petición' });
@@ -25,6 +26,7 @@ function signUp(req, res) {
         if (users[0].username == user.username) return res.status(500).send({ message: `El nombre de usuario '${user.username}' ya esta registrado` });
         else if (users[0].email == user.email) return res.status(500).send({ message: `El correo '${user.email}' ya esta registrado` });
       } else {
+        console.log(user);
         bcrypt.genSalt(10, function (err, salt) {
           bcrypt.hash(params.password, salt, function (err, hash) {
             user.password = hash;
@@ -61,7 +63,11 @@ function login(req, res) {
           return res.status(404).send({ message: "Contraseña incorrecta" });
         } else {
           foundUser.password = undefined;
-          return res.status(200).send({ user: foundUser, token: jwt.createToken(foundUser) });
+          Notifications.count(foundUser._id, function(err, not){
+            if(err) console.log(err);
+            foundUser.notifications = not;
+            return res.status(200).send({ user: foundUser, token: jwt.createToken(foundUser) });
+          });
         }
       });
     }
