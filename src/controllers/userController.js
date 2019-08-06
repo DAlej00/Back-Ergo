@@ -139,7 +139,7 @@ function deleteUser(req, res) {
 }
 
 function uploadImage(req, res) {
-  var userId = req.params.id;
+  var userId = req.user.sub;
   if (req.files) {
     var file_path = req.files.image.path;
     console.log(file_path);

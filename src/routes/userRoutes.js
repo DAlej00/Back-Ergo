@@ -17,6 +17,6 @@ api.delete('/:id', md_auth.ensureAuth, userController.deleteUser);
 api.get('/', md_auth.ensureAuth, userController.getUser);
 api.get('/', md_auth.ensureAuth, userController.listUsers);
 api.get('/image/:nameImage', userController.getImage);
-api.post('/:id/subir-imagen', [md_auth.ensureAuth, md_subir], userController.uploadImage);
+api.post('/subirImagen', [md_auth.ensureAuth, md_subir], userController.uploadImage);
 
 module.exports = api;
