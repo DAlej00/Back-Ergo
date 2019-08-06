@@ -142,7 +142,7 @@ function uploadImage(req, res) {
   var userId = req.user.sub;
   if (req.files) {
     var file_path = req.files.image.path;
-    console.log(file_path);
+    console.log('dato importante: ', file_path);
 
     var file_split = file_path.split("\\");
     console.log(file_split);
@@ -162,26 +162,26 @@ function uploadImage(req, res) {
       file_ext == "jpeg" ||
       file_ext == "gif"
     ) {
-      User.findByIdAndUpdate(
-        userId,
-        { image: file_name },
-        { new: true },
-        (err, usuarioActualizado) => {
-          if (err)
-            return res
-              .status(500)
-              .send({ message: " no se a podido actualizar el usuario" });
-
-          if (!usuarioActualizado)
-            return res
-              .status(404)
-              .send({
-                message: "error en los datos del usuario, no se pudo actualizar"
-              });
-
-          return res.status(200).send({ user: usuarioActualizado });
+      User.findById(userId).exec((err, user)=>{
+        if (err) return res.status(500).send({ message: " no se a podido actualizar el usuario" });
+        if (!user) return res.status(404).send({ message: "error en los datos del usuario, no se pudo actualizar" });
+        if(user.image != null){
+          // YA HAY IMG
+          fs.unlink(`src\\uploads\\users\\` + user.image, err => {
+            console.log('imagen borrada: ', user.image)
+          });
         }
-      );
+        User.findByIdAndUpdate(
+          userId,
+          { image: file_name },
+          { new: true },
+          (err, usuarioActualizado) => {
+            if (err) return res.status(500).send({ message: " no se a podido actualizar el usuario" });
+            if (!usuarioActualizado) return res.status(404).send({ message: "error en los datos del usuario, no se pudo actualizar" });
+            return res.status(200).send({ user: usuarioActualizado });
+          }
+        );
+      })
     } else {
       return removeFilesOfUploads(res, file_path, "extension no valida");
     }
