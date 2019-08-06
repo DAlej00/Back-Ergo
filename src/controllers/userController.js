@@ -209,7 +209,7 @@ function getImage(req, res) {
 
 function listUsers(req, res) {
   User.find({}).exec((err, userUsers) => {
-    if (err) return res.status(500).send({ message: 'Request error!' });
+    if (err) return res.status(500).send({ message: 'Erro en la peticion!' });
 
     return res.status(200).send({ users: userUsers });
   })
