@@ -142,19 +142,14 @@ function uploadImage(req, res) {
   var userId = req.user.sub;
   if (req.files) {
     var file_path = req.files.image.path;
-    console.log('dato importante: ', file_path);
 
     var file_split = file_path.split("\\");
-    console.log(file_split);
 
     var file_name = file_split[3];
-    console.log(file_name);
 
     var ext_split = file_name.split(".");
-    console.log(ext_split);
 
     var file_ext = ext_split[1];
-    console.log(file_ext);
 
     if (
       file_ext == "png" ||
@@ -166,7 +161,6 @@ function uploadImage(req, res) {
         if (err) return res.status(500).send({ message: " no se a podido actualizar el usuario" });
         if (!user) return res.status(404).send({ message: "error en los datos del usuario, no se pudo actualizar" });
         if(user.image != null){
-          // YA HAY IMG
           fs.unlink(`src\\uploads\\users\\` + user.image, err => {
             console.log('imagen borrada: ', user.image)
           });
@@ -176,7 +170,7 @@ function uploadImage(req, res) {
           { image: file_name },
           { new: true },
           (err, usuarioActualizado) => {
-            if (err) return res.status(500).send({ message: " no se a podido actualizar el usuario" });
+            if (err) return res.status(500).send({ message: "No se a podido actualizar el usuario" });
             if (!usuarioActualizado) return res.status(404).send({ message: "error en los datos del usuario, no se pudo actualizar" });
             return res.status(200).send({ user: usuarioActualizado });
           }
@@ -209,8 +203,7 @@ function getImage(req, res) {
 
 function listUsers(req, res) {
   User.find({}).exec((err, userUsers) => {
-    if (err) return res.status(500).send({ message: 'Erro en la peticion!' });
-
+    if (err) return res.status(500).send({ message: 'Error en la peticion' });
     return res.status(200).send({ users: userUsers });
   })
 }

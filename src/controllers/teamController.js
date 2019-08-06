@@ -188,6 +188,26 @@ function userTeams(req, res) {
     })
 }
 
+function teamsCreated(req, res) {
+    var userId = req.user.sub;
+    Team.find({ manager: userId }, (err, teams) => {
+        if (err)
+            return res.status(500).send({ message: 'Error en la peticion' });
+        if (!teams)
+            return res.status(404).send({ message: 'No se han podido obtener los equipos del usuario' });
+        User.populate(teams, { path: 'integrants.user', path: 'integrants.supervisor', path: 'manager' }, (err, teams) => {
+            console.log([err, teams]);
+            if (err)
+                return res.status(500).send({ message: 'Error en la petición' });
+            if (!teams)
+                return res.status(404).send({ message: 'No se han podido obtener datos de integrantes' });
+            return res.status(200).send({ team: teams });
+        });
+    })
+}
+
+
+
 module.exports = {
     createTeam,
     addMember,
@@ -196,5 +216,6 @@ module.exports = {
     deleteTeam,
     listTeams,
     getTeam,
-    userTeams
+    userTeams,
+    teamsCreated
 }
