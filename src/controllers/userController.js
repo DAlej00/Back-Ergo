@@ -75,7 +75,7 @@ function login(req, res) {
 }
 
 function getUser(req, res) {
-  let idUser = req.params.id;
+  let idUser = req.user.sub;
 
   User.findOne({ _id: idUser }).exec((err, user) => {
     if (err) return res.status(500).send({ message: 'Error en la peticion' });
