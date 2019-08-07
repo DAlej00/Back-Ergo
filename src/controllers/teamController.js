@@ -7,7 +7,7 @@ function createTeam(req, res) {
     var params = req.body;
     var team = new Team();
 
-    if (!params.name && !params.description && !params.manager)
+    if (!params.name && !params.description)
         return res.status(404).send({ message: 'Rellene los datos necesarios' });
 
     Team.find({ 'name': params.name }).exec((err, teams) => {
@@ -18,7 +18,7 @@ function createTeam(req, res) {
         } else {
             team.name = params.name
             team.description = params.description;
-            team.manager = params.manager;
+            team.manager = req.user.sub;
             team.integrants = [];
 
             team.save((err, createdTeam) => {
