@@ -41,7 +41,7 @@ function getTeam(req, res) {
         if (!team)
             return res.status(404).send({ message: 'No se ha podido obtener el equipo' });
         User.populate(team, { path: 'integrants.user', path: 'integrants.supervisor', path: 'manager' }, (err, team) => {
-            console.log([err, team]);
+            // console.log([err, team]);
             if (err)
                 return res.status(500).send({ message: 'Error en la petición' });
             if (!team)
@@ -64,7 +64,7 @@ function editTeam(req, res) {
         if (!updatedTeam)
             return res.status(500).send({ message: 'No se ha podido editar equipo' });
         User.populate(updatedTeam, { path: 'integrants.user', path: 'integrants.supervisor', path: 'manager' }, (err, team) => {
-            console.log([err, team]);
+            // console.log([err, team]);
             if (err)
                 return res.status(500).send({ message: 'Error en la petición' });
             if (!team)
@@ -83,7 +83,7 @@ function deleteTeam(req, res) {
         if (!deletedTeam)
             return res.status(500).send({ message: 'El equipo no pudo ser eliminado' });
         User.populate(deletedTeam, { path: 'integrants.user', path: 'integrants.supervisor', path: 'manager' }, (err, team) => {
-            console.log([err, team]);
+            // console.log([err, team]);
             if (err)
                 return res.status(500).send({ message: 'Error en la petición' });
             if (!team)
@@ -117,7 +117,7 @@ function addMember(req, res) {
                 if (!updatedTeam)
                     return res.status(500).send({ message: 'Integrant could not be added' });
                 User.populate(updatedTeam, { path: 'integrants.user', path: 'integrants.supervisor', path: 'manager' }, (err, team) => {
-                    console.log([err, team]);
+                    // console.log([err, team]);
                     if (err)
                         return res.status(500).send({ message: 'Error en la petición' });
                     if (!team)
@@ -148,7 +148,7 @@ function removeMember(req, res) {
                 if (!updatedTeam)
                     return res.status(500).send({ message: 'No se ha podido eliminar integrante' });
                 User.populate(updatedTeam, { path: 'integrants.user', path: 'integrants.supervisor', path: 'manager' }, (err, team) => {
-                    console.log([err, team]);
+                    // console.log([err, team]);
                     if (err)
                         return res.status(500).send({ message: 'Error en la petición' });
                     if (!team)
@@ -167,7 +167,7 @@ function listTeams(req, res) {
         if (!userTeams)
             return res.status(404).send({ message: 'No se han obtenido los equipos' });
         User.populate(userTeams, { path: 'integrants.user', path: 'integrants.supervisor', path: 'manager' }, (err, teams) => {
-            console.log([err, teams]);
+            // console.log([err, teams]);
             if (err)
                 return res.status(500).send({ message: 'Error en la petición' });
             if (!teams)
@@ -185,7 +185,7 @@ function userTeams(req, res) {
         if (!teams)
             return res.status(404).send({ message: 'No se han podido obtener los equipos del usuario' });
         User.populate(teams, { path: 'integrants.user', path: 'integrants.supervisor', path: 'manager' }, (err, teams) => {
-            console.log([err, teams]);
+            // console.log([err, teams]);
             if (err)
                 return res.status(500).send({ message: 'Error en la petición' });
             if (!teams)
@@ -203,7 +203,7 @@ function teamsCreated(req, res) {
         if (!teams)
             return res.status(404).send({ message: 'No se han podido obtener los equipos del usuario' });
         User.populate(teams, { path: 'integrants.user', path: 'integrants.supervisor', path: 'manager' }, (err, teams) => {
-            console.log([err, teams]);
+            // console.log([err, teams]);
             if (err)
                 return res.status(500).send({ message: 'Error en la petición' });
             if (!teams)

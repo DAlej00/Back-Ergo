@@ -17,7 +17,7 @@ function addProject(req, res) {
     project.description = params.description;
     project.developerTeam = params.developerTeam;
 
-    Project.save((err, storedProject) => {
+    project.save((err, storedProject) => {
         if (err)
             return res.status(500).send({ message: 'Error en la petición' });
         if (!storedProject)
