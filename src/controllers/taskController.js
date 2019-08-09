@@ -1,13 +1,18 @@
 'use strict'
 
 var Task = require('../models/task');
-const Label = require('../models/label');
 
 function addTask(req, res) {
     var params = req.body;
-    var task = new Task(params);
-    if (params.name && params.description && params.deadline /* && params.taskOwner */) {
-        task.status = 'TO DO';
+    var task = new Task();
+    if (params.name && params.description && params.taskOwner) {
+        task.name = params.name;
+        task.description = params.description;
+        task.deadline = params.deadline;
+        task.labels = params.labels;
+        task.taskOwnwer = params.taskOwnwer;
+        task.project = params.project;
+        task.finish = params.finish;
 
         task.save((err, storedTask) => {
             if (err) return res.status(500).send({ message: 'Error at saving task', err: err });
@@ -57,7 +62,16 @@ function editTask(req, res){
         } else {
             return res.status(200).send({ task: editedTask });
         }
-    })    
+    })
+}
+
+function getProjectTasks(req, res){
+    var projectId = req.params.id;
+    Task.find({project: projectId}, (err, tasks)=>{
+        if(err) return res.status(500).send({message: 'Error en la peticion'});
+        if(!tasks) return res.status(404).send({message: 'No se han podido obtener las tareas'});
+        return res.status(200).send({tasks: tasks});
+    })
 }
 
 function deleteTask(req, res){
@@ -79,5 +93,6 @@ module.exports = {
     getTask,
     getTasks,
     editTask,
-    deleteTask
+    deleteTask,
+    getProjectTasks
 }

@@ -26,7 +26,14 @@ function createTeam(req, res) {
                     return res.status(500).send({ message: 'Error en la petición' });
                 if (!createdTeam)
                     return res.status(404).send({ message: 'No se ha podido crear equipo' });
-                return res.status(200).send({ team: createdTeam });
+                User.populate(createdTeam, { path: 'integrants.user', path: 'integrants.supervisor', path: 'manager' }, (err, populatedTeam) => {
+                    console.log([err, populatedTeam]);
+                    if (err)
+                        return res.status(500).send({ message: 'Error en la petición' });
+                    if (!populatedTeam)
+                        return res.status(404).send({ message: 'No se han podido obtener datos de integrantes' });
+                    return res.status(200).send({ team: populatedTeam });
+                });
             });
         }
     });
@@ -34,21 +41,12 @@ function createTeam(req, res) {
 
 function getTeam(req, res) {
     let id = req.params.id;
-
-    Team.findById(id).populate('manager').exec((err, team) => {
-        if (err)
-            return res.status(500).send({ message: 'Error en la petición' });
-        if (!team)
-            return res.status(404).send({ message: 'No se ha podido obtener el equipo' });
-        User.populate(team, { path: 'integrants.user', path: 'integrants.supervisor', path: 'manager' }, (err, team) => {
-            // console.log([err, team]);
-            if (err)
-                return res.status(500).send({ message: 'Error en la petición' });
-            if (!team)
-                return res.status(404).send({ message: 'No se han podido obtener datos de integrantes' });
-            return res.status(200).send({ team: team });
-        });
-    });
+    Team.findById(id).populate([{path: 'integrants.user', model: 'User'}, {path: 'integrants.supervisor', model: 'User'}, {path: 'manager', model: 'User'}])
+    .exec((err, team)=>{
+            if (err) return res.status(500).send({message: 'Error en la peticion'});
+            if (!team) return res.status(404).send({ message: 'No se ha podido obtener el equipo' });
+            return res.status(200).send({team: team});
+    })
 }
 
 function editTeam(req, res) {
@@ -104,9 +102,32 @@ function addMember(req, res) {
             return res.status(500).send({ message: 'Error al buscar equipo' });
         if (!foundTeam)
             return res.status(500).send({ message: 'Team not found' });
-        foundTeam.integrants.forEach(element => {
-            if (element._id === integrantId)
-                return res.status(500).send({ message: 'El usuario ya es integrante de este equipo.' });
+        if (foundTeam.integrants.length > 0) {
+            let integrants = foundTeam.integrants.length - 1;
+            for (let i = 0; i <= integrants; i++) {
+                if (foundTeam.integrants[i].user == integrantId)
+                    return res.status(500).send({ message: 'El usuario ya es integrante de este equipo.' });
+                else if (i == integrants)
+                    Team.findByIdAndUpdate(teamId, {
+                        $addToSet: {
+                            integrants: { 'user': integrantId, 'role': 'USER', 'supervisor': supervisorId }
+                        }
+                    }, { new: true }, (err, updatedTeam) => {
+                        if (err)
+                            return res.status(500).send({ message: 'Error at adding integrant' });
+                        if (!updatedTeam)
+                            return res.status(500).send({ message: 'Integrant could not be added' });
+                        User.populate(updatedTeam, { path: 'integrants.user', path: 'integrants.supervisor', path: 'manager' }, (err, team) => {
+                            // console.log([err, team]);
+                            if (err)
+                                return res.status(500).send({ message: 'Error en la petición' });
+                            if (!team)
+                                return res.status(404).send({ message: 'No se han podido obtener datos de integrantes' });
+                            return res.status(200).send({ team: team });
+                        });
+                    });
+            }
+        } else if (foundTeam.integrants.length == 0) {
             Team.findByIdAndUpdate(teamId, {
                 $addToSet: {
                     integrants: { 'user': integrantId, 'role': 'USER', 'supervisor': supervisorId }
@@ -125,7 +146,7 @@ function addMember(req, res) {
                     return res.status(200).send({ team: team });
                 });
             });
-        });
+        }
     });
 }
 

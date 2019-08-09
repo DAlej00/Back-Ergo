@@ -119,9 +119,20 @@ function deleteProject(req, res) {
     })
 }
 
+function getProject(req, res) {
+    var projectId = req.params.id;
+    Project.findById(projectId, (err, project)=>{
+        if (err) return res.status(500).send({ message: 'Error en la petición' });
+        if (!project) return res.status(404).send({ message: 'No se ha podido obtener el proyecto' });
+        return res.status(200).send({ project: project });
+
+    })
+}
+
 module.exports = {
     addProject,
     editProject,
     getProjects,
-    deleteProject
+    deleteProject,
+    getProject
 }
