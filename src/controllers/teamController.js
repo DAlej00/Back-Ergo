@@ -35,7 +35,7 @@ function createTeam(req, res) {
 function getTeam(req, res) {
     let id = req.params.id;
 
-    Team.findById(id, (err, team) => {
+    Team.findById(id).populate('manager').exec((err, team) => {
         if (err)
             return res.status(500).send({ message: 'Error en la petición' });
         if (!team)
@@ -63,7 +63,7 @@ function editTeam(req, res) {
             return res.status(500).send({ message: 'Error en la petición' });
         if (!updatedTeam)
             return res.status(500).send({ message: 'No se ha podido editar equipo' });
-        User.populate(team, { path: 'integrants.user', path: 'integrants.supervisor', path: 'manager' }, (err, team) => {
+        User.populate(updatedTeam, { path: 'integrants.user', path: 'integrants.supervisor', path: 'manager' }, (err, team) => {
             console.log([err, team]);
             if (err)
                 return res.status(500).send({ message: 'Error en la petición' });
@@ -166,7 +166,14 @@ function listTeams(req, res) {
             return res.status(500).send({ message: 'Error en la peticion' });
         if (!userTeams)
             return res.status(404).send({ message: 'No se han obtenido los equipos' });
-        return res.status(200).send({ teams: userTeams });
+        User.populate(userTeams, { path: 'integrants.user', path: 'integrants.supervisor', path: 'manager' }, (err, teams) => {
+            console.log([err, teams]);
+            if (err)
+                return res.status(500).send({ message: 'Error en la petición' });
+            if (!teams)
+                return res.status(404).send({ message: 'No se han podido obtener datos de integrantes' });
+            return res.status(200).send({ teams: teams });
+        });
     });
 }
 
@@ -183,7 +190,7 @@ function userTeams(req, res) {
                 return res.status(500).send({ message: 'Error en la petición' });
             if (!teams)
                 return res.status(404).send({ message: 'No se han podido obtener datos de integrantes' });
-            return res.status(200).send({ team: teams });
+            return res.status(200).send({ teams: teams });
         });
     })
 }
@@ -201,9 +208,9 @@ function teamsCreated(req, res) {
                 return res.status(500).send({ message: 'Error en la petición' });
             if (!teams)
                 return res.status(404).send({ message: 'No se han podido obtener datos de integrantes' });
-            return res.status(200).send({ team: teams });
+            return res.status(200).send({ teams: teams });
         });
-    })
+    });
 }
 
 

@@ -13,7 +13,7 @@ api.post('/', md_auth.ensureAuth, teamController.createTeam);
 api.put('/:id', md_auth.ensureAuth, teamController.editTeam);
 api.put('/:teamId/integrant/:integrantId/supervisor/:supervisorId', md_auth.ensureAuth, teamController.addMember);
 api.delete('/:teamId', md_auth.ensureAuth, teamController.deleteTeam);
-api.delete('/:teamId/member/:memberId', md_auth.ensureAuth, teamController.removeMember);
+api.delete('/:teamId/integrant/:integrantId/supervisor/:supervisorId', md_auth.ensureAuth, teamController.removeMember);
 api.get('/user/created', md_auth.ensureAuth, teamController.teamsCreated);
 
 module.exports = api;
